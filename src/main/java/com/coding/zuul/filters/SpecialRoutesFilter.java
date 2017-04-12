@@ -39,7 +39,7 @@ import com.coding.zuul.model.AbTestingRoute;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
-@Component
+//@Component
 public class SpecialRoutesFilter extends ZuulFilter {
     private static final int FILTER_ORDER = 1;
     private static final boolean SHOULD_FILTER = true;

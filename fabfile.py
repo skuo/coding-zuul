@@ -43,7 +43,7 @@ def build_and_debug():
         read_build_version()
         #local("curl -X POST -u steve:kuo localhost:8090/coding/shutdown") # not necessary, CTRL-C works fine
         local("./gradlew clean build")
-        local("java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n -jar build/libs/coding-facade-%s.jar" % VERSION)
+        local("java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n -jar build/libs/coding-zuul-%s.jar" % VERSION)
    
 @task
 def build_skip_tests_and_debug():
@@ -57,7 +57,7 @@ def build_and_start():
         read_build_version()
         #local("curl -X POST -u steve:kuo localhost:8090/coding/shutdown") # not necessary, CTRL-C works fine
         local("./gradlew clean build")
-        local("java -server -Xms1700M -Xmx1700M -jar build/libs/coding-facade-%s.jar" % VERSION)
+        local("java -server -Xms1700M -Xmx1700M -jar build/libs/coding-zuul-%s.jar" % VERSION)
 
 @task
 def restart_and_debug():
@@ -65,7 +65,7 @@ def restart_and_debug():
         local("pwd")
         read_build_version()
         #local("curl -X POST -u steve:kuo localhost:8090/coding/shutdown") # not necessary, CTRL-C works fine
-        local("java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n -jar build/libs/coding-facade-%s.jar" % VERSION)
+        local("java -server -Xms1700M -Xmx1700M -Xdebug -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n -jar build/libs/coding-zuul-%s.jar" % VERSION)
 
 @task
 def build_and_startDocker():
@@ -79,7 +79,7 @@ def build_and_startDocker():
 def startDocker():
     with settings(warn_only=True):
         local("pwd")
-        local("docker run -p:8181:8181 -v /data:/data -t --rm coding-facade:%s --spring.profiles.active=docker" % VERSION)
+        local("docker run -p:8181:8181 -v /data:/data -t --rm coding-zuul:%s --spring.profiles.active=docker" % VERSION)
     
 
 @task

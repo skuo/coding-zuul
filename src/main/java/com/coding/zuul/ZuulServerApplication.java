@@ -17,6 +17,7 @@ import com.coding.zuul.utils.UserContextInterceptor;
 @EnableZuulProxy
 public class ZuulServerApplication {
 
+/*    
     @LoadBalanced
     @Bean
     public RestTemplate getRestTemplate() {
@@ -31,7 +32,7 @@ public class ZuulServerApplication {
 
         return template;
     }
-
+*/
     public static void main(String[] args) {
         SpringApplication.run(ZuulServerApplication.class, args);
     }
