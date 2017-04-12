@@ -3,7 +3,7 @@ package com.coding.zuul.filters;
 import com.netflix.zuul.context.RequestContext;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class FilterUtils {
 
     public static final String CORRELATION_ID = "tmx-correlation-id";

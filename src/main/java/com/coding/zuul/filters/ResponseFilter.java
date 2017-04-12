@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class ResponseFilter extends ZuulFilter {
     private static final int FILTER_ORDER = 1;
     private static final boolean SHOULD_FILTER = true;

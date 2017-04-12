@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +23,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
 import org.springframework.http.HttpMethod;
@@ -39,10 +40,11 @@ import com.coding.zuul.model.AbTestingRoute;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
-//@Component
+@Component
 public class SpecialRoutesFilter extends ZuulFilter {
     private static final int FILTER_ORDER = 1;
     private static final boolean SHOULD_FILTER = true;
+    private static final Logger logger = LoggerFactory.getLogger(SpecialRoutesFilter.class);
 
     @Autowired
     FilterUtils filterUtils;
@@ -52,7 +54,7 @@ public class SpecialRoutesFilter extends ZuulFilter {
 
     @Override
     public String filterType() {
-        return filterUtils.ROUTE_FILTER_TYPE;
+        return FilterUtils.ROUTE_FILTER_TYPE;
     }
 
     @Override
@@ -76,6 +78,10 @@ public class SpecialRoutesFilter extends ZuulFilter {
             if (ex.getStatusCode() == HttpStatus.NOT_FOUND)
                 return null;
             throw ex;
+        } catch(Exception e) {
+            // something bad happened, return null that is don't do special routes
+            logger.error(e.getMessage());
+            return null;
         }
         return restExchange.getBody();
     }
@@ -84,7 +90,7 @@ public class SpecialRoutesFilter extends ZuulFilter {
         int index = oldEndpoint.indexOf(serviceName);
 
         String strippedRoute = oldEndpoint.substring(index + serviceName.length());
-        System.out.println("Target route: " + String.format("%s/%s", newEndpoint, strippedRoute));
+        logger.info("Target route: " + String.format("%s/%s", newEndpoint, strippedRoute));
         return String.format("%s/%s", newEndpoint, strippedRoute);
     }
 
@@ -144,7 +150,7 @@ public class SpecialRoutesFilter extends ZuulFilter {
     private HttpResponse forward(HttpClient httpclient, String verb, String uri, HttpServletRequest request,
             MultiValueMap<String, String> headers, MultiValueMap<String, String> params, InputStream requestEntity)
             throws Exception {
-        Map<String, Object> info = this.helper.debug(verb, uri, headers, params, requestEntity);
+        //Map<String, Object> info = this.helper.debug(verb, uri, headers, params, requestEntity);
         URL host = new URL(uri);
         HttpHost httpHost = getHttpHost(host);
 

@@ -2,7 +2,7 @@ package com.coding.zuul.utils;
 
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class UserContext {
     public static final String CORRELATION_ID = "tmx-correlation-id";
     public static final String AUTH_TOKEN = "tmx-auth-token";
