@@ -205,7 +205,8 @@ public class SpecialRoutesFilter extends ZuulFilter {
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
 
-        AbTestingRoute abTestRoute = getAbRoutingInfo(filterUtils.getServiceId());
+        //AbTestingRoute abTestRoute = getAbRoutingInfo(filterUtils.getServiceId());
+        AbTestingRoute abTestRoute = null;
 
         if (abTestRoute != null && useSpecialRoute(abTestRoute)) {
             String route = buildRouteString(ctx.getRequest().getRequestURI(), abTestRoute.getEndpoint(),
