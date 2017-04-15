@@ -3,12 +3,15 @@ package com.coding.zuul.filters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -195,24 +198,51 @@ public class SpecialRoutesFilter extends ZuulFilter {
 
         int value = random.nextInt((10 - 1) + 1) + 1;
 
-        if (testRoute.getWeight() < value)
+        if (testRoute.getWeight() < value) {
+            logger.info("useSpecialRoute: " + testRoute);
             return true;
+        }
 
         return false;
     }
 
+    public boolean useTargetRoute() {
+        Random random = new Random();
+        int value = random.nextInt((10 - 1) + 1) + 1;
+        if (value > 11) { // 11 > 10, thus it's always false
+            logger.info(String.format("value=%s --> userTargetRoute", value));
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
 
+        /* Calling a specialRoute endpoint which we will not do
         //AbTestingRoute abTestRoute = getAbRoutingInfo(filterUtils.getServiceId());
         AbTestingRoute abTestRoute = null;
-
         if (abTestRoute != null && useSpecialRoute(abTestRoute)) {
-            String route = buildRouteString(ctx.getRequest().getRequestURI(), abTestRoute.getEndpoint(),
-                    ctx.get("serviceId").toString());
+            String route = buildRouteString(requestUri, abTestRoute.getEndpoint(),
+                    serviceId);
             forwardToSpecialRoute(route);
         }
+        */
+        
+        HttpServletRequest servletReq = ctx.getRequest();
+        String scheme = servletReq.getScheme();
+        String server = servletReq.getServerName();
+        String requestUri = servletReq.getRequestURI();
+        String serviceId = ctx.get("serviceId").toString();
+        String targetRoute = scheme + "://" + server + ":8080/coding/info";
+        
+        // Interesting.  Unable to reset scheme, server and port
+        /*
+        if (useTargetRoute()) {
+            forwardToSpecialRoute(targetRoute);
+        }
+        */
 
         return null;
     }

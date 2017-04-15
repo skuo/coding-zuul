@@ -53,6 +53,9 @@ public class TrackingFilter extends ZuulFilter {
 
         RequestContext ctx = RequestContext.getCurrentContext();
         logger.debug("Processing incoming request for {}.", ctx.getRequest().getRequestURI());
+        
+        filterUtils.setBasicAuthenticaton("user", "CodingBreak");
+        logger.debug("Set basic authentication");
         return null;
     }
 }

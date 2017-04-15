@@ -1,6 +1,10 @@
 package com.coding.zuul.filters;
 
 import com.netflix.zuul.context.RequestContext;
+
+import java.nio.charset.Charset;
+
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -70,6 +74,14 @@ public class FilterUtils {
         if (ctx.get("serviceId") == null)
             return "";
         return ctx.get("serviceId").toString();
+    }
+
+    public void setBasicAuthenticaton(String username, String password) {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        String authHeader = "Basic " + new String(encodedAuth);
+        ctx.addZuulRequestHeader("Authorization", authHeader);
     }
 
 }
